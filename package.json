@@ -1,0 +1,20 @@
+{
+  "name": "numpi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "arangojs": "^6.6.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "random-username-generator": "^1.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.4"
+  }
+}

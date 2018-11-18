@@ -1,0 +1,16 @@
+const url = 'database.url:port';
+const user = 'username';
+const pass = 'password';
+
+
+
+module.exports = 
+{
+	dbLogin: function()
+	{
+		var Database = require('arangojs').Database;
+		db = new Database(url);
+  		db.useBasicAuth(user, pass)
+  		return db;
+	}
+}
