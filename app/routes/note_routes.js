@@ -222,7 +222,7 @@ module.exports = function(app, db)
             debug: req.body
         }
 
-        if (req.body.type == null || (req.body.type != "new" && req.body.type != 'old' && req.body.type != 'score') || req.body.level == null)
+        if (req.body.type == null || (req.body.type != "new" && req.body.type != 'old' && req.body.type != 'score'))
         {
             let resp = 
             {
@@ -241,8 +241,14 @@ module.exports = function(app, db)
         query =
         `
 		for h in scores
-    	filter h.level == @level
-		`
+        `
+        if (req.body.level != null)
+        {
+            query += 
+            `
+        	filter h.level == @level
+    		`;
+        }
 
         if (req.body.uuid != null)
         {
@@ -255,10 +261,10 @@ module.exports = function(app, db)
         query += 
         `
 		sort h.@attr @dir
-		limit @offset, 5
+		limit @offset, @limit
 		let username = document(concat("users/",h.uuid)).username
 
-		return merge(unset(h,"_key","_rev","_id", "level"), {username})
+		return merge(unset(h,"_key","_rev","_id"), {username})
 		`
 
         let dir = "desc";
@@ -281,6 +287,12 @@ module.exports = function(app, db)
         };
         log(json(tmp));
 
+        let limit = 10;
+        if (req.body.limit != null)
+        {
+            limit = parseInt(req.body.limit);
+        }
+
         db.query(
         {
             query,
@@ -290,7 +302,8 @@ module.exports = function(app, db)
                 attr: attr,
                 offset: offset,
                 dir: dir,
-                level: req.body.level
+                level: req.body.level,
+                limit: limit
             }
         }).then(
             cursor => cursor.all()
