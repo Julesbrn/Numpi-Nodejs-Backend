@@ -55,7 +55,7 @@ module.exports = function(app, db)
 
         let query =
         `
-	  	return document(concat("users/",@uuid)).username
+	  	return document(concat("users/",@uuid))
 	  	`
 
         db.query(
@@ -75,13 +75,14 @@ module.exports = function(app, db)
                 {
                     log("test2");
                     let username = rug.generate();
+                    let extra = Math.floor(Math.random()*8999+1000);
 
 
 
 
                     let query2 =
                     `
-				  	insert {_key: to_string(@uuid), username: to_string(@username)} into users
+				  	insert {_key: to_string(@uuid), username: to_string(@username), extra: to_string(@extra)} into users
 				  	return NEW
 				  	`
 
@@ -91,15 +92,17 @@ module.exports = function(app, db)
                         bindVars:
                         {
                             uuid: uuid,
-                            username: username
+                            username: username,
+                            extra: extra
                         }
                     }).then(
                         cursor => cursor.all()
                     ).then(keys =>
                     {
+                        let uname = keys[0].username + "#" + keys[0].extra;
                         resp.data = 
                         {
-                            username: keys[0].username
+                            username: uname
                         };
 
                         log("keys-> ", keys);
@@ -110,9 +113,10 @@ module.exports = function(app, db)
                 else
                 {
                     log("keys:", keys);
+                    let uname = keys[0].username + "#" + keys[0].extra;
                     resp.data = 
                     {
-                        username: keys[0]
+                        username: uname
                     };
                     let ret = JSON.stringify(resp, null, 2);
                     log(ret);

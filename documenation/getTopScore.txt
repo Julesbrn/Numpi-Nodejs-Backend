@@ -1,0 +1,74 @@
+============Success A===================
+{
+  "status": 1,
+  "data": [
+    {
+      "found": 1,
+      "easy": {
+        "score": 22,
+        "time": 1543447703
+      },
+      "medium": {
+        "score": 0,
+        "time": 1542050230
+      },
+      "hard": {
+        "score": 15,
+        "time": 1542059387
+      }
+    }
+  ],
+  "msg": "Username found",
+  "debug": {
+    "username": "simulator#7157"
+  }
+}
+
+================================
+
+============Success B===================
+{
+  "status": 1,
+  "data": [
+    {
+      "found": 1,
+      "easy": {
+        "score": 22,
+        "time": 1543447703
+      },
+      "medium": {
+        "score": 0,
+        "time": 1542050230
+      },
+      "hard": {
+        "score": 15,
+        "time": 1542059387
+      }
+    }
+  ],
+  "msg": "Username found",
+  "debug": {
+    "username": "simulator"
+  }
+}
+================================
+
+============ Fail ===================
+
+{
+  "status": -1,
+  "data": [
+    {
+      "found": 0,
+      "easy": null,
+      "medium": null,
+      "hard": null
+    }
+  ],
+  "msg": "Username not found",
+  "debug": {
+    "username": "USERTHATDOESNOTEXIST"
+  }
+}
+
+================================
