@@ -297,7 +297,7 @@ module.exports = function(app, db)
             return;
         }
 
-
+        /*
         let query =
         `
         LET a = 
@@ -323,7 +323,41 @@ module.exports = function(app, db)
         )
 
         return {friends: a, requests: b}
+        `*/
+
+        // new version
+		let query =
         `
+        LET a = 
+        (
+        for item in friends
+            filter item.user1 == @uuid || item.user2 == @uuid
+            filter item.accepted
+
+            let uuid = (item.user1 == @uuid) ? item.user2 : item.user1
+            return 
+            {
+            	username: document(concat("users/",uuid)).username,
+            	id: item._key
+            }
+        )
+
+        LET b = 
+        (
+        for item in friends
+            filter item.user2 == @uuid
+            filter !item.accepted
+            return  
+            {
+            username: document(concat("users/",item.user1)).username,
+            id: item._key
+            }
+        )
+
+        return {friends: a, requests: b}
+        `
+        
+
 
         db.query(
         {
@@ -660,6 +694,69 @@ module.exports = function(app, db)
             }
         );
         log("/rejectFriend");
+        log(json(resp));
+    })
+
+
+
+     app.post('/deleteFriend', (req, res) =>
+    {
+
+        log(req.body);
+
+        let resp = {
+            status: 1,
+            data: null,
+            msg: "Success",
+            debug: req.body
+        }
+        if (req.body.id == null)
+        {
+            uuid = req.body.id;
+            let resp = {
+                data: null,
+                status: 0,
+                debug: req.body,
+                msg: "Missing id"
+            };
+            res.send(JSON.stringify(resp, null, 4));
+            return;
+        }
+
+
+        let query =
+        `
+        REMOVE document(concat("friends/",@id)) IN friends
+        return {deleted: true}
+        `
+
+        db.query(
+        {
+            query: query,
+            bindVars:
+            {
+                id: req.body.id
+            }
+        }).then(
+            cursor => cursor.all()
+        ).then(
+            keys =>
+            {
+
+                resp.data = keys;
+                let ret = JSON.stringify(resp, null, 2);
+                log(ret);
+                res.send(json(resp));
+            },
+            err =>
+            {
+                resp.msg = "There was an error in processing, check the logs.";
+                console.error('Failed to execute query:', err);
+                log(err);
+                res.send(json(resp));
+            }
+        );
+        log("/deleteFriend");
         log(json(resp));
     })
 }

@@ -204,7 +204,7 @@ module.exports = function(app, db)
 		)
 
 
-		return {found: count(getuuid), easy: easy[0], medium: medium[0], hard: hard[0]}
+		return {found: count(getuuid), easy: easy[0], easyCount: count(easy), medium: medium[0], mediumCount: count(medium), hard: hard[0], hardCount: count(hard)}
 	  	`
 
         db.query(
